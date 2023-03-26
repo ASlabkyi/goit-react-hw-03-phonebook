@@ -5,11 +5,32 @@ import { ContactList } from './ContactList/ContactList';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Container } from './Phonebook.styled';
 
+const CONTACTS_LOCAL_STORAGE_KEY = 'contacts';
+
 export class Phonebook extends Component {
   state = {
     contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const localData = JSON.parse(
+      localStorage.getItem(CONTACTS_LOCAL_STORAGE_KEY)
+    );
+
+    if (localData) {
+      this.setState({ contacts: localData });
+    }
+  }
+
+  componentDidUpdate(_, preState) {
+    if (preState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem(
+        CONTACTS_LOCAL_STORAGE_KEY,
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
 
   handleAddContact = newContact => {
     const { contacts } = this.state;
